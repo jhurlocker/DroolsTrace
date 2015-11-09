@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+table tr:nth-child(odd)	{
+  padding: 5px;
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  padding: 5px;
+  background-color: #ffffff;
+}
+</style>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<body>
+
+<div ng-app="myApp" ng-init="showCvrg=false" ng-controller="customersCtrl"> 
+
+<table align="center"  width="80%">
+<tr>
+<td colspan="8">
+<div ng-include = "'header.html'"></div>
+</td>
+</tr>
+<tr>
+	<td colspan="8">
+		<table width="100%">
+		<tr>
+			<th colspan="8" align="left">
+              Administrative Console
+            </th>
+		</tr>
+		<tr>
+            <td align="left">
+				<b>Current BRMS Git Repository Path</b>
+            </td>
+			<td colspan="8" align="left">
+              {{existingBrmsGitRepoPath}}
+            </td>
+		</tr>
+		<tr>
+            <td colspan="8">
+              <button ng-click="showAddReq = false">-</button>
+              <button ng-click="showAddReq = true">+</button>
+              &nbsp;&nbsp;
+              <b>Add A Git Repo Path</b>
+            </td>
+
+		</tr>
+		<tr ng-show="showAddReq">
+            <td>
+              Path to BRMS Git Repo
+            </td> 
+            <td>
+            <label ng-model="existingBrmsGitRepoPath"></label>
+            </td>
+        </tr>
+        <tr ng-if="showAddReq">
+            <td>
+            	<input ng-model="brmsGitRepoPath" size="60"/>
+            </td>
+            <td>
+            	&nbsp;<button type="submit" ng-click="addBRMSGitRepoPath(brmsGitRepoPath)">Add</button>
+            </td>
+         </tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th align="left" colspan="2">
+		Projects
+	</th>
+</tr>	  	
+<tr ng-repeat-start="x in ruleCvrg">
+           <td width="5%">
+              <button ng-show="showCvrg" ng-click="showCvrg = false">-</button>
+              <button ng-show="!showCvrg" ng-click="showCvrg = true">+</button>
+            </td>
+            <td width="95%"><b>{{x.projName}}</b></td>
+            </tr>
+            <tr ng-show="showCvrg">
+            <td>
+            </td>
+            <td ng-if="x.reqCvrg * 100 > 74">
+            Requirements Coverage = {{x.reqCvrg * 100 | number:2}}%
+            <br/><image src="img/greenStatus.png" width = "{{x.reqCvrg * 100}}%" height="15"/>            
+			</td>
+			<td ng-if="x.reqCvrg * 100 > 24 && x.reqCvrg * 100 < 75">
+            Requirements Coverage = {{x.reqCvrg * 100 | number:2}}%
+            <br/><image src="img/yellowStatus.png" width = "{{x.reqCvrg * 100}}%" height="15"/>            
+			</td>
+			<td ng-if="x.reqCvrg * 100 > 0 && x.reqCvrg * 100 < 25">
+            Requirements Coverage = {{x.reqCvrg * 100 | number:2}}%
+            <br/><image src="img/redStatus.png" width = "{{x.reqCvrg * 100}}%" height="15"/>            
+			</td>
+			<td ng-if="x.reqCvrg * 100 == 0">
+            Requirements Coverage = {{x.reqCvrg * 100 | number:2}}%
+            <br/><image src="img/redStatus.png" width = "1%" height="15"/>            
+			</td>
+          </tr>
+          <tr ng-show="showCvrg">
+            <td>
+            </td>
+            <td  ng-if="x.testCvrg * 100 > 74">
+            Test Coverage = {{x.testCvrg * 100 | number:2}}%
+            <br/><image src="img/greenStatus.png" width = "{{x.testCvrg * 100}}%" height="15"/>            
+			</td>
+			<td  ng-if="x.testCvrg * 100 > 24 && x.testCvrg * 100 < 75">
+            Test Coverage = {{x.testCvrg * 100 | number:2}}%
+            <br/><image src="img/yellowStatus.png" width = "{{x.testCvrg * 100}}%" height="15"/>            
+			</td>
+			<td ng-if="x.testCvrg * 100 > 0 && x.testCvrg * 100 < 25">
+            Test Coverage = {{x.testCvrg * 100 | number:2}}%
+            <br/><image src="img/redStatus.png" width = "{{x.testCvrg * 100}}%" height="15"/>            
+			</td>
+			<td  ng-if="x.testCvrg * 100 == 0">
+            Test Coverage = {{x.testCvrg * 100 | number:2}}%
+            <br/><image src="img/redStatus.png" width = "1%" height="15"/>            
+			</td>
+          </tr>
+<tr ng-show="false" ng-repeat-end=""><td></td></tr> 
+
+</table>
+<br/>
+
+
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('customersCtrl', function($scope, $http, $sce) {
+  $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/all")
+	  .success(function (response) {$scope.brmsProjects = response;});
+  	//console.dir($scope);
+    $scope.hello = {name: "Boaz"};
+    $scope.newName = "";
+    $scope.something="";
+    $scope.showAddReq;
+    //$scope.thisCanBeusedInsideNgBindHtml = $sce.trustAsHtml(someHtmlVar)
+    var data = "";
+
+
+   // $scope.gitRepos = function() {
+    	//alert("GENERATING DOCUMENTATION");
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/listOfGitRepos").success(function(response) {
+           
+        	$scope.gitRepoList = response;
+        })
+
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/brmsGitPath/brmsMetaData.path").success(function(response) {
+        	console.log("GETTING BRMS REPO PATH");
+			console.log("OBJECT= " + response);
+            //var path = response.replace(/\\/g, "\\").replace(/\//g, "\\");
+            //var path = response.replace(/\^/g, "\\");
+            var path = response;
+            console.log("PATH= " + path);
+        	$scope.existingBrmsGitRepoPath = path;
+        })
+          
+    //}
+
+    $scope.addBRMSGitRepoPath = function(fileLocation) {
+    	console.log("this is the data" + fileLocation);
+    	var fileLocationVar = fileLocation.replace(/\\/g, "^").replace(/\//g, "^");
+    	//var fileLocationVar = """ + fileLocation + """;
+    	//console.log("this is the fileLocationVar" + fileLocationVar);
+
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/addBRMSGitPath/" + fileLocationVar).success(function(status) {
+        	location.reload();
+        })
+    } 
+    
+    $scope.addReq = function(reqName, desc, version, type, status, severity) {
+        //console.log("IN associateReq FUNCTION");
+    	reqNameVar = reqName;
+    	descVar = desc;
+    	versionVar = version;
+    	typeVar = type;
+    	statusVar = status;
+    	severityVar = severity;
+
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/addReq/" + reqNameVar + "/" + descVar + "/" + versionVar + "/" + typeVar + "/" + statusVar + "/" + severityVar).success(function(status) {
+        	location.reload();
+        })
+	
+    } 
+
+    $scope.getRule = function(ruleName) {
+        //console.log("IN associateReq FUNCTION");
+
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/rules/head")
+  	      .success(function (response) {$scope.ruleList = response.documentationList;})
+
+  	    for (i = 0; i < reponse.documentationList; i++){
+			if (reponse.documentationList.get(i) == ruleName){
+				console.log("RULE NAME= " + ruleName);
+				$scope.rule = ruleName;
+				}
+  	  	    }
+	
+    } 
+
+   // $scope.getRulesCvrg = function(projName) {
+        //console.log("IN associateReq FUNCTION");
+		//$scope.showCvrg = true;
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/rulesCoverage/")
+  	      .success(function (response) {
+  	  	      $scope.ruleCvrg = response.reqTestCvrgList;
+  	  	  //console.log("RULES CVRG RESPONSE= " + response);
+  	  	  //console.log("RULES CVRG= " + $scope.ruleCvrg);
+  	  	      
+
+		})
+	
+   // } 
+	  
+    $scope.removeReq = function(reqName, type, version) {
+        //console.log("IN associateReq FUNCTION");
+    	reqNameVar = reqName;
+    	typeVar = type;
+		versionVar = version;
+
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/removeReq/" + reqNameVar + "/" + typeVar + "/" + versionVar).success(function(status) {
+        	location.reload();
+        })
+	
+    } 
+    
+	});
+</script>
+
+</body>
+</html>

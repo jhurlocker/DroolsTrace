@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Create Requirement Template</title>
+    <script>document.write('<base href="' + document.location + '" />');</script>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+table tr:nth-child(odd)	{
+  padding: 5px;
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  padding: 5px;
+  background-color: #ffffff;
+}
+.autoResizeImage {
+    max-width: 100%;
+    height: auto;
+    width: 100%;
+}
+</style>
+  </head>
+
+  <body ng-app="genTempApp">
+  <div ng-controller="MainCtrl">
+  <table align="center" width="80%">
+<tr>
+<td colspan="3">
+<div ng-include = "'header.html'"></div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<b>Create A Custom Requirement Document</b>
+<br/><br/>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<div style="font-size: 80%; font-style: italic; color: red;" ng-show="isGitRepoSelected()">Please Select a Project</div>
+<div ng-include = "'projSelectHeader.html'"></div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+	<div ng-show="! isGitRepoSelected()"><i>Download <b>{{getProj()}}</b> Requirement Template</i>&nbsp;&nbsp;<a ng-href="{{getReqTemplateDoc()}}"><input type="image" name="Download Requirement Template" src="img/wordDoc.png" border="0" alt="Download Requirement Template" ng-click="getReqTemplateDoc()"/></a></div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<table style="border: 0px; background-color: #ffffff">
+<tr>
+<td style="background-color: #ffffff">
+	Template Name:&nbsp;
+</td>
+<td style="background-color: #ffffff">
+	<input ng-disabled="isGitRepoSelected()" ng-model="name">
+</td>
+</tr>
+<tr>
+<td style="background-color: #ffffff">
+	Description:&nbsp;
+</td>
+<td style="background-color: #ffffff">
+	<input ng-disabled="isGitRepoSelected()" ng-model="description">
+</td>
+</tr>
+<tr>
+<td colspan="2" style="background-color: #ffffff">
+<button ng-disabled="isGitRepoSelected()" ng-click="addInput('false')">Add Section</button>
+</td>
+</tr>
+</table>
+	<!-- <input ng-model="theProjectSel" value="{{selectedProj}}">
+	<br/><div ng-model="theProjectSel">{{selectedProj}}</div>-->
+</td>
+</tr>
+<tr ng-repeat="item in likedLabels">
+<td>
+    	
+			Section Title:&nbsp;<input ng-model="item.label">
+			</td>
+			</tr>
+			<tr>
+			<td>
+			
+			<br/><button ng-disabled="isGitRepoSelected()" ng-click="addInput('true')">Generate Template</button>
+			<!--  <input type="hidden" ng-model="theArray" value="{{likedLabels |json}}">-->
+			<br/><br/>
+			<!--  Document Preview
+			<br/>
+			<div style="background-image: url(img/document.png); max-width: 100%; height: 100%; width: 100%; border: 1px solid black;">
+			 <br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;<pre>{{likedLabels |json}}</pre>
+			
+			</div>-->
+			</td>
+  </tr>
+  </table>
+  </div>
+  <script>
+  var app = angular.module('genTempApp', []);
+
+  app.controller('MainCtrl', function($scope, $http) {
+$scope.selectedProj = "";
+$scope.name = "";
+$scope.description = "";
+
+$scope.setProj = function(proj){
+	console.log("setProj val= " + proj);
+	$scope.selectedProj = proj;
+}
+
+$scope.getProj = function(){
+	return document.getElementById("gitRepo").value;
+}
+
+$scope.getReqTemplateDoc = function() {
+	//alert("GENERATING DOCUMENTATION");
+	var gitRepo = document.getElementById("gitRepo").value;
+	return "/BRMS-ReqTool-Rest/rservices/message/requirements/docReqTempFile/" + gitRepo;
+}
+
+$scope.selectedProj = "";
+$scope.isGitRepoSelected = function(){
+	if (document.getElementById("gitRepo") != null){
+		var gitRepo = document.getElementById("gitRepo").value;
+		console.log("GIT REPO= " + gitRepo);
+		if (gitRepo.trim() == ""){
+			return true;
+		}
+		return false;
+	}
+	return true;
+}
+
+console.log("Selected Proj= " + $scope.selectedProj);
+      $http.get("/BRMS-ReqTool-Rest/rservices/message/listOfGitRepos").success(function(response) {
+          
+      	$scope.gitRepoList = response;
+      })
+      
+    	$scope.likedLabels = []
+      $scope.theProjectSel
+  $scope.addInput = function(generate){
+   	var completed = generate;
+   	//var gitRepo = $scope.selectedProj;
+   	var gitRepo = document.getElementById("gitRepo").value;
+   	console.log("GENERATE= " + completed);
+   	console.log("setProj val= " + $scope.selectedProj);
+	if (completed == "true"){
+		console.log("COMPLETED!");
+		var arrayReqs = JSON.stringify($scope.likedLabels);
+        	$http.put("/BRMS-ReqTool-Rest/rservices/message/genTemp/" + arrayReqs + "/" + gitRepo + "/" + $scope.name + "/" + $scope.description + "/" + gitRepo.replace(".git", "") + ".reqTemp").success(function(arrayReqs, status) {
+        });
+	} else {
+	    $scope.likedLabels.push({label:''});
+	    //$scope.likedLabels.push('');
+	    //var headingArray = $scope.linkedLables;
+	    for (i = 0; i < $scope.linkedLables; i++){
+	    	console.log(JSON.stringify($scope.linkedLables.get(x)));
+	    }	
+		}
+  }
+  });
+  </script>
+  
+  </body>
+
+</html>

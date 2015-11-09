@@ -1,0 +1,10 @@
+
+<!-- <div ng-controller="projSelCtrl" >-->
+BRMS Project&nbsp;<select id="gitRepo" ng-model="selectedProj" ng-change="showReqs(selectedProj, reqTempLength)">
+		<option></option>
+		<option ng-attr-id="gitRepo" ng-repeat="proj in gitRepoList" value="{{proj}}">{{proj}}</option>
+	</select>
+	<p></p>
+
+<!-- </div> -->
+

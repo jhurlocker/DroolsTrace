@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<!--  <META http-equiv="refresh" content="3;URL=headRules.html">-->
+</head>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<body>
+
+<div ng-app="app" ng-controller="MainController"> 
+
+<table align="center">
+<tr>
+<td colspan="3">
+<div ng-include = "'header.html'"></div>
+</td>
+</tr>
+<tr>
+	<th colspan="3">
+		Generate Requirement Template&nbsp;&nbsp;
+	</th>
+</tr>
+<tr>
+	<td colspan="3">
+		<h3>Requirement Heading</h3>
+	</td>
+</tr>
+<tr>
+    <td>
+       	<input ng-model="reqSection" size="40"/>
+    </td>
+    <td>
+         &nbsp;<button type="submit" ng-click="addReqSection(reqSection)">Add Section</button>
+    </td>
+</tr>
+<tr>
+    <td>
+         &nbsp;<button type="submit" ng-click="addReq(reqName, desc, version, type, status, severity)">Generate Template</button>
+    </td>
+</tr>
+</table>
+</div>
+
+</body>
+</html>

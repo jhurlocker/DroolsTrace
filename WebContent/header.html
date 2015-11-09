@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head></head>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-animate.js"></script>
+<body >
+
+
+<table style="padding: 5px; border: 0px" width="100%">
+<tr>
+<td style="padding: 5px; border: 0px; background-color: #f1f1f1" valign="middle">
+<img src="img/droolsTrace.png" align="left"/>
+</td>
+<td align="right" valign="top" style="padding: 5px; border: 0px; background-color: #f1f1f1">
+<select onchange="location = this.options[this.selectedIndex].value;">
+		<option></option>
+		<option value="reqs.html">Requirement List</option>
+		<option value="headRules.html">Associated Requirements</option>
+		<option value="admin.html">Administrative Console</option>
+		<option value="genTemp.html">Generate Requirement Template</option>
+	</select>
+<!-- &nbsp;&nbsp;<input type="image" name="Generate Documentation" src="img/wordDoc.png" border="0" alt="Generate Documentation" ng-click="genDoc()"/> -->
+</td>
+</tr>
+</table>
+
+
+
+
+</body>
+</html>

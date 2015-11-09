@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+table tr:nth-child(odd)	{
+  padding: 5px;
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  padding: 5px;
+  background-color: #ffffff;
+}
+</style>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<body ng-app="myApp" ng-init="showDoc=false,showAddReq=false,showUploadReq=false">
+
+<div ng-controller="customersCtrl as cc"> 
+
+<table align="center"  width="80%">
+<tr>
+<td colspan="9">
+<div ng-include = "'header.html'"></div>
+</td>
+</tr>
+<tr>
+<td colspan="9">
+<div style="font-size: 80%; font-style: italic; color: red;" ng-show="isGitRepoSelected()">Please Select a Project</div>
+<div ng-include = "'projSelectHeader.html'"></div>
+</td>
+</tr>
+<tr>
+<td colspan="9" align="left">
+<table width="100%">
+		<tr>
+		<th align="left">
+           <button ng-show="showDoc" ng-click="showDoc = false">-</button>
+   		   <button ng-show="!showDoc" ng-click="showDoc = true">+</button>
+      Documentation
+         </th>
+        </tr>
+        <tr>
+<td colspan="8" ng-show="showDoc && ! isGitRepoSelected()">
+	<div style="font-size: 90%; font-style: italic;" ng-show="showDoc && ! isGitRepoSelected()">Download <b>{{getProj()}}</b> Requirement Template&nbsp;&nbsp;<a ng-href="{{getReqTemplateDoc()}}"><input type="image" name="Download Requirement Template" src="img/wordDoc.png" border="0" alt="Download Requirement Template" ng-click="getReqTemplateDoc()"/></a></div>
+	<div style="font-size: 90%; font-style: italic;" ng-show="showDoc && ! isGitRepoSelected()">Download <b>{{getProj()}}</b> Requirement Documentation&nbsp;&nbsp;<a ng-href="{{genDoc()}}"><input type="image" name="Generate Documentation" src="img/wordDoc.png" border="0" alt="Generate Documentation" ng-click="genDoc()"/></a></div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+	<td colspan="9">
+		<table width="100%">
+		<tr>
+			<th colspan="9" align="left">
+			  <button ng-show="showAddReq" ng-click="showAddReq = false">-</button>
+              <button ng-show="!showAddReq" ng-click="showAddReq = true">+</button>
+              Add Requirement
+            </th>
+		</tr>
+		<tr ng-show="showAddReq" >
+            <td>
+              Req Name
+            </td>  
+             <td>
+              Description
+            </td>                       
+            <td>
+              Version
+            </td>
+            <td>
+              Type
+            </td>
+             <td>
+              Status
+            </td>
+             <td>
+              Due Date
+            </td>
+            <td>
+              Severity
+            </td>
+        </tr>
+        <tr ng-if="showAddReq">
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="reqName"/>
+            </td>
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="desc" size="40"/>
+            </td>
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="version" size="4"/>
+            </td>
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="type" size="4"/>
+            </td>
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="status" size="4"/>
+            </td>
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="dueDate" size="8"/>
+            </td>
+            <td>
+            	<input ng-disabled="isGitRepoSelected()" ng-model="severity" size="4"/>
+            </td>
+            <td>
+            	&nbsp;<button type="submit" ng-disabled="isGitRepoSelected()" ng-click="addReq(reqName, desc, version, type, status, severity, reqTemp.length)">Add</button>
+            </td>
+         </tr>
+         <tr ng-show="showAddReq" ng-repeat="x in reqTemp">
+        	<td>{{x}}<input ng-attr-id="{{ 'heading' + $index }}" ng-show="false" ng-attr-value="{{x}}" size="5"/></td>
+        	<!--  <td>Section{{$index}}</td>
+        	<td>Length <input ng-model="reqTempLength" value="{{reqTemp.length}}"></td>-->
+        	
+        	<td colspan="6"><input ng-attr-id="{{ 'section' + $index }}" size="40"/><!--  <input ng-model="reqTempLength">--></td>
+        </tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<td colspan="9">
+		<table width="100%">
+		<tr>
+		<th colspan="9" align ="left">
+		      <button ng-show="showUploadReq" ng-click="showUploadReq = false">-</button>
+              <button ng-show="!showUploadReq" ng-click="showUploadReq = true">+</button>
+              Upload Requirement
+        </th>
+		</tr>
+		<tr ng-if="showUploadReq">
+            <td colspan="9">
+              Requirement File Location
+            </td>  
+        </tr>
+        <tr ng-if="showUploadReq">
+            <td colspan="9">
+            	<input ng-disabled="isGitRepoSelected()" ng-model="fileLocation" size="70"/>
+            	&nbsp;<button ng-disabled="isGitRepoSelected()" type="submit" ng-click="uploadReq(fileLocation)">Upload</button>
+         	</td>
+         </tr>
+		</table>
+	</td>
+</tr>
+<tr>
+	<th colspan="9">
+		Requirements
+	</th>
+</tr>	
+<tr>
+	<td></td>
+	<th>
+		Requirement Name
+	</th>
+	            <th>
+            	Description
+            </th>
+		<th>
+		Version
+	</th>
+		<th>
+		Type
+	</th>
+		<th>
+		Status
+	</th>
+		<th>
+		Due Date
+	</th>
+		<th>
+		Severity
+	</th>
+	<th></th>
+</tr>	
+<tr style="background-color: #f1f1f1" ng-repeat-start="x in reqs">
+            <td>
+              <button ng-if="x.expanded" ng-click="x.expanded = false">-</button>
+              <button ng-if="!x.expanded" ng-click="x.expanded = true">+</button>
+            </td>
+            <td ng-show="! edit == $index || edit == -1">{{x.reqName}}</td>
+            <td ng-show="edit == $index"><input type="text" ng-model="editReqName"/></td>
+            <td ng-show="! edit == $index || edit == -1">{{x.reqDescription}}</td>
+            <td ng-show="edit == $index"><input ng-model="editDesc" type="text" ng-attr-value="{{x.reqDescription}}"/></td>
+            <td ng-show="! edit == $index || edit == -1">{{x.reqVersion}}</td>
+            <td ng-show="edit == $index"><input ng-model="editVersion" type="text" ng-attr-value="{{x.reqVersion}}"/></td>
+            <td ng-show="! edit == $index || edit == -1">{{x.type}}</td>
+            <td ng-show="edit == $index"><input ng-model="editType" type="text" ng-attr-value="{{x.type}}"/></td>
+            <td ng-show="! edit == $index || edit == -1">{{x.status}}</td>
+            <td ng-show="edit == $index"><input ng-model="editStatus" type="text" ng-attr-value="{{x.status}}"/></td>
+            <td ng-show="! edit == $index || edit == -1">{{x.dueDate}}</td>
+            <td ng-show="edit == $index"><input type="text" ng-attr-value="{{x.dueDate}}"/></td>							
+            <td ng-show="! edit == $index || edit == -1">{{x.severity}}</td>
+            <td ng-show="edit == $index"><input ng-model="editSeverity" type="text" ng-attr-value="{{x.severity}}"/></td>
+            
+            <td><input type="image" ng-show="editButton" ng-model="editButton" name="Edit" src="img/edit.png" border="0" alt="Edit" ng-click="display('edit', $index, x)"/>&nbsp;
+            <input type="image" ng-show="saveButton" ng-model="saveButton" name="Save" src="img/add.png" border="0" alt="Save" ng-click="editReq(editReqName, editDesc, editVersion, editType, editStatus, editSeverity, x.sectionMap, x.associatedRuleList)"/>
+            <input ng-show="edit == $index" type="image" ng-show="undoButton" ng-model="undoButton" name="Undo" src="img/undo.png" border="0" alt="Undo" ng-click="display('undo', $index)"/>
+            &nbsp;<input type="image" name="Remove" src="img/delete.png" border="0" alt="Remove" ng-click="removeReq(x.reqName)"/></td>
+          </tr>
+          <tr  ng-if="x.expanded" ng-show="! edit == $index || edit == -1">
+          <td colspan="8">
+          <table >
+          <tr ng-if="x.expanded" ng-repeat="(heading, sectionText) in x.sectionMap">
+          <td style="background-color: #ffffff">{{heading}}</td>
+          <td style="background-color: #ffffff">{{sectionText}}</td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          
+          <tr ng-show="edit == $index">
+          <td colspan="9">
+          <table>
+          <tr ng-if="x.expanded" ng-repeat="(heading, sectionText) in x.sectionMap">
+          <td style="background-color: #ffffff"><b>Section</b></td>
+          <td style="background-color: #ffffff">{{heading}}<input ng-attr-id="{{ 'headingEdit' + $index }}" ng-show="false" ng-attr-value="{{heading}}" size="5"/></td>
+          <td style="background-color: #ffffff"><input type="text" ng-attr-id="{{ 'sectionEdit' + $index }}" ng-attr-value="{{sectionText}}"/></td>
+          </tr>
+          </table>
+          </td>
+          </tr>
+          <!-- <tr ng-if="x.expanded" >
+          	<td></td>
+          	<td><b>Requirement Description</b></td>
+            <td><div>{{x.ruleContent}}</div></td>
+            <td colspan="6">{{x.reqDescription}}</td>
+          </tr> -->
+          <tr ng-if="x.expanded" ng-repeat="d in x.associatedRuleList" ng-repeat-end="">
+          	<td style="background-color: #ffffff"></td>
+          	<td style="background-color: #ffffff"><i>Associated Rule</i></td>
+          	<td colspan="6" style="background-color: #ffffff">{{d.ruleName}}</td>
+          </tr>
+         <tr ng-if="x.expanded" ng-repeat="r in rules" ng-repeat-end="">
+			<td></td>
+          	<td><i>Rule Content</i></td>
+          	<td colspan="5" style="background-color: #ffffff">{{getRule(d.ruleName)}}</td>
+          </tr>
+</table>
+<br/>
+
+
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('customersCtrl', function($scope, $http, $sce) {
+  $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/" + $scope.selectedProj)
+	  .success(function (response) {$scope.reqs = response.requirementList;});
+  	//console.dir($scope);
+    $scope.hello = {name: "Boaz"};
+    $scope.newName = "";
+    $scope.something="";
+    $scope.reqTempLength = "";
+    //$scope.thisCanBeusedInsideNgBindHtml = $sce.trustAsHtml(someHtmlVar)
+    //  $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/reqTemp")
+	//  .success(function (response) {$scope.reqTemp = response;});
+    var data = "";
+    $scope.myChange=function(val, data){
+    	console.log("on-change",$scope.newName);
+    	console.log("on-change",val);
+    	data = JSON.stringify(val);
+    	console.log("this is the data",data);
+    	};
+    	
+    $scope.sendPost = function(val) {
+    	data = JSON.stringify(val);
+    	console.log("this is the data",data);
+
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/basic/", data).success(function(data, status) {
+            $scope.hello = data;
+        })
+    } 
+
+    $scope.genDoc = function() {
+    	//alert("GENERATING DOCUMENTATION");
+    	console.log("GENERATING DOCUMENTATION");
+    	//if (document.getElementById("gitRepo") != null){
+    		var gitRepo = document.getElementById("gitRepo").value;
+    		return "/BRMS-ReqTool-Rest/rservices/message/requirements/genDoc/" + gitRepo;
+    	//}
+    }
+
+    $scope.isGitRepoSelected = function(){
+    	if (document.getElementById("gitRepo") != null){
+    		var gitRepo = document.getElementById("gitRepo").value;
+    		console.log("GIT REPO= " + gitRepo);
+    		if (gitRepo.trim() == ""){
+    			return true;
+    		}
+    		return false;
+    	}
+    	return true;
+    }
+    
+    $scope.uploadReq = function(fileLocation) {
+    	fileLocationVar = fileLocation.replace(/\\/g, "^");
+    	console.log("this is the data",data);
+
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/uploadReq/" + fileLocationVar).success(function(status) {
+        	location.reload();
+        })
+    } 
+    $scope.Section1="";
+    $scope.addReq = function(reqName, desc, version, type, status, severity, reqTempLength) {
+        //console.log("IN associateReq FUNCTION");
+    	reqNameVar = reqName;
+    	descVar = desc;
+    	versionVar = version;
+    	typeVar = type;
+    	statusVar = status;
+    	severityVar = severity;
+    	reqTempLengthVar = reqTempLength;
+    	assocRulesVar = ["none"];
+    	var customSectionValArray = "";
+    	var gitRepo = document.getElementById("gitRepo").value;
+    	
+    	for (i = 0; i < reqTempLengthVar; i++) { 
+        	var elementId = "section" + i;
+        	console.log("sectionId=" + document.getElementById("section"+i).value);
+        	console.log("headingId=" + document.getElementById("heading"+i).value);
+        	customSectionValArray = customSectionValArray.concat(document.getElementById("heading"+i).value + ":");
+        	if (i == (reqTempLengthVar - 1)){
+        		customSectionValArray = customSectionValArray.concat(document.getElementById("section"+i).value);
+        	} else {
+        		customSectionValArray = customSectionValArray.concat(document.getElementById("section"+i).value + ",");
+            }
+    		//console.log("section val= " + document.getElementById("section"+i).value)
+    	}
+console.log("customSectionValArray= " + customSectionValArray);
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/addReq/" + reqNameVar + "/" + descVar + "/" + versionVar + "/" + typeVar + "/" + statusVar + "/" + severityVar + "/" + JSON.stringify(customSectionValArray) + "/" + gitRepo + "/" + JSON.stringify(assocRulesVar)).success(function(status) {
+        	//location.reload();
+       })
+	
+    } 
+
+    $scope.editReq = function(reqName, desc, version, type, status, severity, reqTempLength, assocRules) {
+        //console.log("IN associateReq FUNCTION");
+        console.log("SECTION MAP SIZE= " + Object.keys(reqTempLength).length);
+    	reqNameVar = reqName;
+    	descVar = desc;
+    	versionVar = version;
+    	typeVar = type;
+    	statusVar = status;
+    	severityVar = severity;
+    	reqTempLengthVar = Object.keys(reqTempLength).length;
+    	assocRulesVar = assocRules;
+    	var customSectionValArray = "";
+    	var gitRepo = document.getElementById("gitRepo").value;
+    	
+    	for (i = 0; i < reqTempLengthVar; i++) { 
+        	var elementId = "sectionEdit" + i;
+        	//console.log("sectionEditId=" + document.getElementById("sectionEdit"+i).value);
+        	//console.log("headingEditId=" + document.getElementById("headingEdit"+i).value);
+        	customSectionValArray = customSectionValArray.concat(document.getElementById("headingEdit"+i).value + ":");
+        	if (i == (reqTempLengthVar - 1)){
+        		customSectionValArray = customSectionValArray.concat(document.getElementById("sectionEdit"+i).value);
+        	} else {
+        		customSectionValArray = customSectionValArray.concat(document.getElementById("sectionEdit"+i).value + ",");
+            }
+    		//console.log("section val= " + document.getElementById("section"+i).value)
+    	}
+console.log("customSectionValArray= " + customSectionValArray);
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/addReq/" + reqNameVar + "/" + descVar + "/" + versionVar + "/" + typeVar + "/" + statusVar + "/" + severityVar + "/" + JSON.stringify(customSectionValArray) + "/" + gitRepo + "/" + JSON.stringify(assocRulesVar)).success(function(status) {
+        	location.reload();
+       })
+	
+    } 
+    
+    $scope.getRule = function(ruleName) {
+        //console.log("IN associateReq FUNCTION");
+
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/rules/head")
+  	      .success(function (response) {$scope.ruleList = response.documentationList;})
+
+  	    for (i = 0; i < reponse.documentationList; i++){
+			if (reponse.documentationList.get(i) == ruleName){
+				console.log("RULE NAME= " + ruleName);
+				$scope.rule = ruleName;
+				}
+  	  	    }
+	
+    } 
+
+    //$scope.reqTempLength = "";
+    $scope.showReqs = function(projName, reqTempLength){
+        if (projName.trim() != ""){
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/reqTemp/" + projName)
+  	  .success(function (response) {$scope.reqTemp = response.docHeadings;
+  	  console.log("DOC HEADINGS= " + response.docHeadings)});
+        $http.get("/BRMS-ReqTool-Rest/rservices/message/requirementsByProject/" + projName)
+  	  .success(function (response) {$scope.reqs = response.requirementList;});
+        } else {
+        	$scope.reqTemp = null;
+        	$scope.reqs = null;
+            }
+    }
+      
+    $scope.removeReq = function(reqName) {
+    	reqNameVar = reqName;
+
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/removeReq/" + reqNameVar).success(function(status) {
+        	location.reload();
+        })
+	
+    } 
+
+    $scope.getProj = function(){
+    	if (document.getElementById("gitRepo") != null){
+    		return document.getElementById("gitRepo").value;
+    	}
+    }
+
+    $scope.getReqTemplateDoc = function() {
+    	//alert("GENERATING DOCUMENTATION");
+    	if (document.getElementById("gitRepo") != null){
+    		var gitRepo = document.getElementById("gitRepo").value;
+    		return "/BRMS-ReqTool-Rest/rservices/message/requirements/docReqTempFile/" + gitRepo;
+    	}
+    }
+    
+    $scope.editButton = true;
+    $scope.saveButton = false;
+    $scope.edit = -1;
+    $scope.undoButton = false;
+    $scope.display = function(edit, index, req) {
+      if (edit == 'edit') {
+        console.log("INDEX= " + index);
+        console.log("REQ NAME= " + req.reqName);
+        $scope.editReqName = req.reqName;
+        $scope.undoButton = true;
+        $scope.saveButton = true;
+        $scope.editButton = false;
+        $scope.edit = index;
+      } else {
+    	  console.log("INDEX= " + index);
+          $scope.undoButton = false;
+          $scope.saveButton = false;
+          $scope.editButton = true;
+          $scope.edit = -1;
+      }
+      //return $scope.edit == true;
+    }
+	//});
+
+//app.controller('projSelCtrl', function($scope, $http) {
+	$scope.selectedProj = "";
+	$scope.name = "";
+	$scope.description = "";
+
+	$scope.setProj = function(proj){
+		console.log("setProj val= " + proj);
+		$scope.selectedProj = proj;
+	}
+
+	//console.log("Selected Proj= " + $scope.selectedProj);
+	      $http.get("/BRMS-ReqTool-Rest/rservices/message/listOfGitRepos").success(function(response) {
+	          
+	      	$scope.gitRepoList = response;
+	      })
+	  });
+</script>
+
+</body>
+</html>

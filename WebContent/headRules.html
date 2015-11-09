@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<style>
+table, th , td  {
+  border: 1px solid grey;
+  border-collapse: collapse;
+  padding: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+table tr:nth-child(odd)	{
+  background-color: #f1f1f1;
+}
+table tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+</style>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+<script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-sanitize.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0-beta.1/angular-route.js"></script>
+<body>
+
+<div ng-app="app" ng-controller="MainController"> 
+
+<table align="center"  width="80%">
+<tr>
+<td colspan="4">
+<div ng-include = "'header.html'"></div>
+</td>
+</tr>
+<tr>
+<td colspan="4">
+BRMS Project&nbsp;<select id="gitRepo" ng-model="selectedProj" ng-change="showReqs(selectedProj)">
+		<option></option>
+		<option ng-attr-id="gitRepo" ng-repeat="proj in gitRepoList" value="{{proj}}">{{proj}}</option>
+	</select>
+	<p></p>
+</td>
+</tr>
+<tr>
+	<td></td>
+	<th>
+		Rule Name
+	</th>
+	<th>
+		Requirement(s)
+	</th>
+	<th>
+		Test(s)
+	</th>
+</tr>	
+<tr ng-repeat-start="x in names">
+            <td width="5%">
+              <button ng-if="x.expanded" ng-click="x.expanded = false">-</button>
+              <button ng-if="!x.expanded" ng-click="x.expanded = true">+</button>
+            </td>
+            <td width="33%" ng-model="ruleName">{{x.ruleName}}</td>
+            <!--<input name="theRuleName" value="{{x.ruleName}}"/>-->
+            <td  width="31%">
+                <!--  <form name="req_details{{$index}}" ng-submit="sendPost()">
+                <form name="req_details{{$index}}">
+    				<input name="req_input" ng-model="newName"/>
+    				<input ng-model="something"/>
+    				<button type="submit" ng-click="sendPost(newName)">Add Requirement</button>
+				</form>-->
+				<div ng-app="app2" ng-controller="SubController"> 
+				<table width="100%">
+					<tr>
+					<td valign="top">
+					      <select ng-model="selectedItem" ng-change="selectReq(selectedItem)">
+					      	<option value=""></option>
+        					<option ng-repeat="a in reqs" value="{{a.reqName}}.breq">{{a.reqName}}</option>
+      					  </select>					
+					</td>
+					</tr>
+					<tr ng-repeat="c in reqs">
+					<td ng-repeat="d in c.associatedRuleList" ng-if="d.ruleName==x.ruleName" width="90%" style="background-color : #ffffff">
+						{{c.reqName}} - {{c.reqDescription}}
+					</td>
+					<td ng-repeat="d in c.associatedRuleList" ng-if="d.ruleName==x.ruleName" width="10%" style="background-color : #ffffff">
+						<!--  <button type="submit" ng-click="removeAssocRule(x.ruleName, x.objectId, c.reqName, c.type, c.reqVersion)">Remove</button>-->
+						<input type="image" name="Remove" src="img/delete.png" border="0" alt="Remove" ng-click="removeAssocRule(x.ruleName, x.objectId, c.reqName, c.type, c.reqVersion)"/>
+					</td>
+					</tr>
+					<tr>
+					<td ng-repeat="b in singleReq" width="90%" style="background-color : #ffffff">
+						<!--  <input ng-model="reqDesc"/>-->
+						{{b.reqName}} - {{b.reqDescription}}						
+					</td>
+					<td ng-repeat="b in singleReq" width="10%" style="background-color : #ffffff">
+						<!--  <button type="submit" ng-click="associateReq(x.ruleName, x.objectId, b.reqName, b.type, b.reqVersion)">Associate</button>-->
+						<input type="image" name="Associate" src="img/add.png" border="0" alt="Associate" ng-click="associateReq(x.ruleName, x.objectId, b.reqName, b.type, b.reqVersion)"/>
+					</td>
+					</tr>
+					<!--  <tr ng-repeat-end></tr>-->
+				</table>
+				</div>
+				</td>
+				<td  width="31%">
+				<div ng-app="app2" ng-controller="SubController"> 
+				<table width="100%">
+					<tr>
+					<td valign="top">
+					      <select ng-model="selectedTest" ng-change="selectTest(selectedTest)">
+					       <!--  <select ng-model="selectedTest">-->
+					      	<option value=""></option>
+        					<option ng-repeat="a in tests" value="{{a.testName}}">{{a.testName}}</option>
+      					  </select>					
+					</td>
+					</tr>
+					<tr ng-repeat="c in assocTests">
+					<td ng-repeat="d in c.associatedRuleList" ng-if="d.ruleName==x.ruleName" width="90%" style="background-color : #ffffff">
+						{{c.testName}} 				
+					</td>
+					<td ng-repeat="d in c.associatedRuleList" ng-if="d.ruleName==x.ruleName" width="10%" style="background-color : #ffffff">
+						<!--  <button type="submit" ng-click="removeAssocRule(x.ruleName, x.objectId, c.reqName, c.type, c.reqVersion)">Remove</button>-->
+						<input type="image" name="Remove" src="img/delete.png" border="0" alt="Remove" ng-click="removeAssocTest(x.ruleName, c.testName, selectedProj)"/>
+					</td>
+					</tr>
+					<tr ng-show="testScenarioName">
+					<td width="90%" style="background-color : #ffffff">
+						<!--  <input ng-model="reqDesc"/>-->
+						<div ng-model="testScenarioName" ng-value="selectedTest">{{selectedTest}}</div>					
+					</td>
+					<td  width="10%"  style="background-color : #ffffff">
+						<!--  <button type="submit" ng-click="associateReq(x.ruleName, x.objectId, b.reqName, b.type, b.reqVersion)">Associate</button>-->
+						<input type="image" name="Associate" src="img/add.png" border="0" alt="Associate" ng-click="associateTest(x.ruleName, x.objectId, testScenarioName)"/>
+					</td>
+					</tr>
+					<!--  <tr ng-repeat-end></tr>-->
+				</table>
+				</div>
+			</td>
+          </tr>
+          <tr ng-if="x.expanded" ng-repeat-end="">
+          	<td>Rule Content</td>
+            <!--  <td><div>{{x.ruleContent}}</div></td>-->
+            <td colspan="3"><div ng-bind-html="x.ruleContent"></div></td>
+          </tr>
+</table>
+
+</div>
+
+<script>
+var app = angular.module('app', ['ngSanitize']);
+app.controller('MainController', function($scope, $http, $sce) {
+  $http.get("/BRMS-ReqTool-Rest/rservices/message/rules/head")
+	  .success(function (response) {$scope.names = response.documentationList;});
+  	//console.dir($scope);
+    $scope.hello = {name: "Boaz"};
+    $scope.ruleName = "test";
+    $scope.something="";
+    //$scope.thisCanBeusedInsideNgBindHtml = $sce.trustAsHtml(someHtmlVar)
+    var data = "";
+    $scope.myChange=function(val, data){
+    	console.log("on-change",$scope.newName);
+    	console.log("on-change",val);
+    	data = JSON.stringify(val);
+    	console.log("this is the data",data);
+    	};
+
+        $scope.genDoc = function() {
+            alert("GENERATING DOCUMENTATION");
+            $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/genDoc").success(function(status) {
+            })
+        }
+
+        $scope.showReqs = function(projName){
+            //  $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/reqTemp/" + projName)
+        	//  .success(function (response) {$scope.reqTemp = response.docHeadings;
+        	//  console.log("DOC HEADINGS= " + response.docHeadings)});
+              $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/" + projName)
+        	  .success(function (response) {$scope.reqs = response.requirementList;});
+              $http.get("/BRMS-ReqTool-Rest/rservices/message/rulesByProject/" + projName)
+        	  .success(function (response) {$scope.names = response.documentationList;});
+              $http.get("/BRMS-ReqTool-Rest/rservices/message/testScenariosByProject/" + projName)
+        	  .success(function (response) {$scope.tests = response.ruleTestList;});
+              $http.get("/BRMS-ReqTool-Rest/rservices/message/testsByProject/" + projName)
+        	  .success(function (response) {$scope.assocTests = response.ruleTestList;});
+          	  //var headingsVar = $scope.reqTemp.split(',');
+          	  //console.log("REQTEMP SIZE= " + reqTempLength);
+          	  //console.log("NGMODEL= " + $scope.Section1)
+      		//location.reload();
+          }
+            
+    $scope.sendPost = function(val) {
+    	data = JSON.stringify(val);
+    	console.log("this is the data",data);
+    //console.log($scope.req_details[index].req_input)
+   //var data = JSON.stringify($scope.newName);
+   //var data = $scope.newName;
+//            $.param({
+//            json: JSON.stringify({
+//                name: $scope.newName
+//            })
+//       });
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/basic/", data).success(function(data, status) {
+            $scope.hello = data;
+        })
+    } 
+
+	$scope.selectedProj = "";
+	$scope.name = "";
+	$scope.description = "";
+
+	$scope.setProj = function(proj){
+		console.log("setProj val= " + proj);
+		$scope.selectedProj = proj;
+	}
+
+	//console.log("Selected Proj= " + $scope.selectedProj);
+	      $http.get("/BRMS-ReqTool-Rest/rservices/message/listOfGitRepos").success(function(response) {
+	          
+	      	$scope.gitRepoList = response;
+	      })
+	      
+	});
+
+var app2 = angular.module('myApp2', []);
+app.controller('SubController', function($scope, $http, $sce) {
+	var gitRepo = document.getElementById("gitRepo").value;
+  //$http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/" + gitRepo.replace(".git", ""))
+  $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/" + gitRepo)
+	 .success(function (response) {$scope.reqs = response.requirementList;});
+//  $http.get("http://192.168.56.1:8080/BRMS-ReqTool-Rest/rservices/message/requirements/all")
+//  .success(function (response) {$scope.assocRules = response.requirementList.associatedRuleList;});
+  $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/" + gitRepo)
+  .success(function(data) {
+	    $scope.assocReqs = [];
+	    angular.forEach(data.requirementList, function(value, key) {
+	        $scope.assocReqs.push(value);
+	        console.log(value);
+	        })});
+	    
+  	console.dir($scope);
+    $scope.hello = {name: "Boaz"};
+    //$scope.ruleName = "";
+    $scope.something="";
+    $scope.selectedItem="";
+    $scope.assocDesc="";
+    //$scope.thisCanBeusedInsideNgBindHtml = $sce.trustAsHtml(someHtmlVar)
+    var data = "";
+    $scope.myChange=function(val, data){
+    	console.log("on-change",$scope.newName);
+    	console.log("on-change",val);
+    	data = JSON.stringify(val);
+    	console.log("this is the data",data);
+    	};
+
+    $scope.selectReq = function(val){
+    	
+    	fileName = val;
+    	
+    	console.log(val);
+    	var url = "/BRMS-ReqTool-Rest/rservices/message/requirements/desc/" + fileName;
+      $http.get(url).success(function(response) {$scope.singleReq = response.requirementList;}); //{
+
+        }
+
+    $scope.selectTest = function(val){
+    	
+    	fileName = val;
+    	$scope.testScenarioName = val;
+  //  	console.log(val);
+  //  	var url = "/BRMS-ReqTool-Rest/rservices/message/requirements/desc/" + fileName;
+   //   $http.get(url).success(function(response) {$scope.singleReq = response.requirementList;}); //{
+
+        }
+    
+    $scope.associateReq = function(val, val2, reqName, type, version) {
+        console.log("IN associateReq FUNCTION");
+    	data = val;
+    	data2 = val2;
+    	reqFileNameJson = reqName;
+    	$scope.assocDesc=reqFileNameJson;
+    	reqTypeJson = type;
+    	reqVersionJson = version;
+    	console.log("this is the data",data);
+    	console.log("this is the data2",data2);
+    	console.log("this is the reqFileNameJson",reqFileNameJson);
+    //console.log($scope.req_details[index].req_input)
+   //var data = JSON.stringify($scope.newName);
+   //var data = $scope.newName;
+//            $.param({
+//            json: JSON.stringify({
+//                name: $scope.newName
+//            })
+//       });
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/basic/" + data + "/" + data2 + "/" + reqFileNameJson + "/" + reqTypeJson + "/" + reqVersionJson).success(function(status) {
+            //$scope.hello = data;
+        	//$scope.reload;
+        	//location.reload();
+        	$scope.showReqs(gitRepo);
+        })
+//       	$scope.reload = function (){
+//       		$http.get("http://192.168.56.1:8080/BRMS-ReqTool-Rest/rservices/message/rules/head")
+//      	  .success(function (response) {$scope.names = response.documentationList;});     
+//       	    $scope.$apply();
+ //      	}	
+    } 
+
+    $scope.associateTest = function(ruleName, objectId, testScenarioName) {
+    	var gitRepo = document.getElementById("gitRepo").value;
+        console.log("IN associateTest FUNCTION");
+
+    	console.log("this is the ruleName",ruleName);
+    	console.log("this is the objectId",objectId);
+    	console.log("this is the testScenarioName",testScenarioName);
+    	console.log("this is the gitRepo",gitRepo);
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/assocRuleTest/" + ruleName + "/" + objectId + "/" + testScenarioName + "/" + gitRepo).success(function(status) {
+            //$scope.hello = data;
+        	//$scope.reload;
+        	//location.reload();
+        	$scope.showReqs(gitRepo);
+        })
+
+    } 
+
+    $scope.removeAssocTest = function(ruleName, testScenarioName, selectedProj) {
+    	var gitRepo = document.getElementById("gitRepo").value;
+        console.log("IN removeAssociateTest FUNCTION");
+
+    	console.log("this is the ruleName",ruleName);
+    	console.log("this is the testScenarioName",testScenarioName);
+    	console.log("this is the selectedProj",selectedProj);
+        $http.put("/BRMS-ReqTool-Rest/rservices/message/removeAssocTest/" + ruleName + "/" + testScenarioName).success(function(status) {
+            //$scope.hello = data;
+        	//$scope.reload;
+
+        	//var rulePageLocation = location.href;
+        	//rulePageLocation = rulePageLocation.substring(0, rulePageLocation.indexOf('?'));
+        	//location.href = rulePageLocation + "?var1=" + gitRepo;
+			$scope.showReqs(gitRepo);
+        	//location.reload();
+        	//document.getElementById("gitRepo").value = gitRepo;
+        	//$scope.selectedTest.push(selectedTest);
+        	
+        })
+
+    } 
+    
+    //Remove rule association from requirement
+    $scope.removeAssocRule = function(ruleName, objId, reqName, type, version) {    	
+        	console.log("IN deleteAssocReq FUNCTION");
+        	ruleNameVar = ruleName;
+    		objIdVar = objId;
+    		reqNameVar = reqName;
+    		typeVar = type;
+    		versionVar = version;
+        	console.log("this is the ruleName",ruleName);
+        	console.log("this is the objId",objId);
+        	
+        	
+        	$http.put("/BRMS-ReqTool-Rest/rservices/message/removeAssocRule/" + ruleNameVar + "/" + objIdVar + "/" + reqNameVar + "/" + typeVar + "/" + versionVar).success(function(status) {
+        	//location.reload();
+        		$scope.showReqs(gitRepo);
+        })
+//       	$scope.reload = function (){
+//       		$http.get("http://192.168.56.1:8080/BRMS-ReqTool-Rest/rservices/message/rules/head")
+//      	  .success(function (response) {$scope.names = response.documentationList;});     
+//       	    $scope.$apply();
+ //      	}	
+    } 
+      
+	});
+</script>
+
+</body>
+</html>
