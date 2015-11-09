@@ -167,11 +167,11 @@
       <artifactId>picketbox-commons</artifactId>
       <version>1.0.0.final-redhat-2</version>
     </dependency>
-    <dependency>
+   <!-- <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox-infinispan</artifactId>
       <version>4.0.17.SP2-redhat-2</version>
-    </dependency>
+    </dependency> --> 
     <dependency>
       <groupId>org.jboss.as</groupId>
       <artifactId>jboss-as-controller-client</artifactId>
@@ -187,7 +187,7 @@
       <artifactId>jboss-logging</artifactId>
       <version>3.1.2.GA-redhat-1</version>
     </dependency>
-    <dependency>
+   <!--   <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
       <version>2.3.6.Final-redhat-1</version>
@@ -206,7 +206,7 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
       <version>2.3.6.Final-redhat-1</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.jboss.ejb3</groupId>
       <artifactId>jboss-ejb3-ext-api</artifactId>
@@ -304,10 +304,28 @@
       </resource>
     </resources>
     <plugins>
+    	<plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-eclipse-plugin</artifactId>
+		<version>2.9</version>
+		<configuration>
+			<wtpversion>2.0</wtpversion>
+			<wtpContextName>BRMS-ReqTool-Rest</wtpContextName>
+		</configuration>
+		</plugin>
+		            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>7.3.Final</version>
+                <configuration>
+                    <name>BRMS-ReqTool-Rest</name>
+                </configuration>
+            </plugin>
       <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <version>2.4</version>
         <configuration>
+          <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
           <warSourceDirectory>WebContent</warSourceDirectory>
           <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
