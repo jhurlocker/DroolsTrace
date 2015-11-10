@@ -85,7 +85,7 @@ public class GenerateDoc {
     			RuleFileFromHead ruleFileFromHead = new RuleFileFromHead();
 
 					try {
-						rule = ruleFileFromHead.getFile(rule.getRuleName());
+						rule = ruleFileFromHead.getFile(rule.getRuleName(), projName);
 					} catch (IOException | GitAPIException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

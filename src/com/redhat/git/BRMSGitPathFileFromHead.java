@@ -21,8 +21,6 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 
-import com.redhat.brms.rest.ReadPathFile;
-
 /**
  * 
  * @author jhurlocker
