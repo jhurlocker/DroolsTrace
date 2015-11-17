@@ -6,3 +6,4 @@ Requirements tool that integrates with Drools 6.x
 3. Run Maven to build and install Drools Tace
 4. Deploy to the same EAP instance as the Drools Workbench
 5. Access the console at /BRMS-ReqTool-Rest/admin.html
+6. Open the GettingStarted.pdf
