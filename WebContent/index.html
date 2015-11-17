@@ -1,0 +1,87 @@
+<!doctype html>
+<html ng-app="ui.bootstrap.demo">
+  <head>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+  <div ng-controller="CarouselDemoCtrl">
+<table align="center"  width="80%">
+<tr>
+<td colspan="3">
+<div ng-include = "'header.html'"></div>
+</td>
+</tr>
+<tr>
+<td bgcolor="#98FC66">
+&nbsp;
+</td>
+<td bgcolor="#339900">
+&nbsp;
+</td>
+<td bgcolor="#015A01">
+&nbsp;
+</td>
+</tr>
+<tr>
+<td colspan="3">
+  <!--  <div style="height: 305px">-->
+  <div>
+    <uib-carousel interval="myInterval" no-wrap="noWrapSlides">
+      <uib-slide ng-repeat="slide in slides" active="slide.active">
+        <img ng-src="{{slide.image}}" style="margin:auto;">
+        <div class="carousel-caption">
+          <!-- <h4>Slide {{$index}}</h4>
+           <p>{{slide.text}}</p>-->
+        </div>
+      </uib-slide>
+    </uib-carousel>
+  </div>
+  </td>
+  </tr>
+  </table>
+ <!--  <div class="row">
+    <div class="col-md-6">
+      <button type="button" class="btn btn-info" ng-click="addSlide()">Add Slide</button>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="noWrapSlides">
+          Disable Slide Looping
+        </label>
+      </div>
+    </div>
+    <div class="col-md-6">
+      Interval, in milliseconds: <input type="number" class="form-control" ng-model="myInterval">
+      <br />Enter a negative number or 0 to stop the interval.
+    </div>
+  </div>--> 
+</div>
+
+<script>
+angular.module('ui.bootstrap.demo', ['ngAnimate', 'ui.bootstrap']);
+angular.module('ui.bootstrap.demo').controller('CarouselDemoCtrl', function ($scope) {
+  $scope.myInterval = 5000;
+  $scope.noWrapSlides = true;
+  var slides = $scope.slides = [];
+  $scope.addSlide = function() {
+	console.log("Window Location= " + window.location.host);
+	console.log("Slides Length= " + slides.length);
+    var newWidth = 100 + slides.length + 1;
+    console.log("NewWidth= " + newWidth);
+    slides.push({
+      //image: '//placekitten.com/' + newWidth + '/300',
+ //     image: window.location.host + '//wtop.com/wp-content/uploads/2015/' + 10 + '/AP_6010130158-560x374.jpg',
+image: '//' + window.location.host + '/BRMS-ReqTool-Rest/img/index/' + newWidth + '/traceIntro.png',
+text: ['More','Extra','Lots of','Surplus', 'testing'][slides.length % 3] + ' ' +
+        ['Cats', 'Kittys', 'Felines', 'Cutes', 'test'][slides.length % 3]
+    });
+  };
+  for (var i=0; i<3; i++) {
+    $scope.addSlide();
+  }
+});
+</script>
+  </body>
+</html>

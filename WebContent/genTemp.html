@@ -159,7 +159,8 @@ console.log("Selected Proj= " + $scope.selectedProj);
 		console.log("COMPLETED!");
 		var arrayReqs = JSON.stringify($scope.likedLabels);
         	$http.put("/BRMS-ReqTool-Rest/rservices/message/genTemp/" + arrayReqs + "/" + gitRepo + "/" + $scope.name + "/" + $scope.description + "/" + gitRepo.replace(".git", "") + ".reqTemp").success(function(arrayReqs, status) {
-        });
+			
+            });
 	} else {
 	    $scope.likedLabels.push({label:''});
 	    //$scope.likedLabels.push('');

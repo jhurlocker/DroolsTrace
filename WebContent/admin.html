@@ -19,7 +19,7 @@ table tr:nth-child(even) {
 <script src= "http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
 <body>
 
-<div ng-app="myApp" ng-init="showCvrg=false" ng-controller="customersCtrl"> 
+<div ng-app="myApp" ng-init="showAddReq=false; showCvrg=false" ng-controller="customersCtrl"> 
 
 <table align="center"  width="80%">
 <tr>
@@ -45,8 +45,8 @@ table tr:nth-child(even) {
 		</tr>
 		<tr>
             <td colspan="8">
-              <button ng-click="showAddReq = false">-</button>
-              <button ng-click="showAddReq = true">+</button>
+              <button ng-show="showAddReq" ng-click="showAddReq = false">-</button>
+              <button ng-show="!showAddReq" ng-click="showAddReq = true">+</button>
               &nbsp;&nbsp;
               <b>Add A Git Repo Path</b>
             </td>

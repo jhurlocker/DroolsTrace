@@ -333,6 +333,8 @@ app.controller('customersCtrl', function($scope, $http, $sce) {
 console.log("customSectionValArray= " + customSectionValArray);
         $http.put("/BRMS-ReqTool-Rest/rservices/message/addReq/" + reqNameVar + "/" + descVar + "/" + versionVar + "/" + typeVar + "/" + statusVar + "/" + severityVar + "/" + JSON.stringify(customSectionValArray) + "/" + gitRepo + "/" + JSON.stringify(assocRulesVar)).success(function(status) {
         	//location.reload();
+        	//$scope.selectedProj = gitRepo;
+        	$scope.showReqs(gitRepo, reqTempLength);
        })
 	
     } 
@@ -403,7 +405,8 @@ console.log("customSectionValArray= " + customSectionValArray);
     	reqNameVar = reqName;
 
         $http.put("/BRMS-ReqTool-Rest/rservices/message/removeReq/" + reqNameVar).success(function(status) {
-        	location.reload();
+        	//location.reload();
+        	$scope.showReqs(document.getElementById("gitRepo").value, "");
         })
 	
     } 
