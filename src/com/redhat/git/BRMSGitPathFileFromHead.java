@@ -20,6 +20,12 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
+import org.jboss.as.cli.CliInitializationException;
+import org.jboss.as.cli.CommandContext;
+import org.jboss.as.cli.CommandContextFactory;
+import org.jboss.as.cli.CommandLineException;
+
+import com.redhat.brms.rest.ReadAndWriteProps;
 
 /**
  * 
@@ -30,7 +36,8 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 public class BRMSGitPathFileFromHead {
 
 	public String getBRMSGitPath(String brmsGitPathFileName) {
-
+		//System.getProperties().setProperty("brmsGitPath", "C:/Users/jhurlock");
+		//System.out.println("BRMSGITPATH PROP= " + System.getProperty("brmsGitPath"));
 	    Repository repository = null;
 	    Git git = null;
 		try {
@@ -39,12 +46,18 @@ public class BRMSGitPathFileFromHead {
 //			URL url = BRMSGitPathFileFromHead.class.getResource("BRMSGitPathFileFromHead.class");
 //			String path = BRMSGitPathFileFromHead.class.getClass().getClassLoader().getParent()
 //			String traceRepoPath = brmsGitPath.replace("\"", "").concat("/../rm/.git");
+			
 			URL url1 = BRMSGitPathFileFromHead.class.getResource("BRMSGitPathFileFromHead.class");
 			System.out.println("URL STRING= " + url1.toURI().toString());
+		
 			String[] tracePathArray = url1.toURI().toString().split("/bin/");
 			String traceGitRepoPath = tracePathArray[0].replace("vfs:/", "").concat("/bin/rm/.git");
 			System.out.println("TRACEGITREPO= " + traceGitRepoPath);
-			repository = new FileRepository(traceGitRepoPath);
+			ReadAndWriteProps readAndWriteProps = new ReadAndWriteProps();
+			traceGitRepoPath = readAndWriteProps.readBRMSRepoPath();
+			repository = new FileRepository(traceGitRepoPath + "/../rm/.git");
+			//!!!FOR OPENSHIFT!!!
+			//repository = new FileRepository("/var/lib/openshift/564ccd0b2d527177f3000234/brms/jboss/bin/rm/.git");
 			git = new Git(repository);
 		} catch (IOException | URISyntaxException e) {
 			// TODO Auto-generated catch block
@@ -124,4 +137,5 @@ public class BRMSGitPathFileFromHead {
 		return "";
 
 	}
+	
 }

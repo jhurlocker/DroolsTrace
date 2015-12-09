@@ -18,6 +18,11 @@
       <version>1.0.1.Final-redhat-2</version>
     </dependency>
     <dependency>
+		<groupId>commons-httpclient</groupId>
+		<artifactId>commons-httpclient</artifactId>
+		<version>3.1</version>
+	</dependency>    
+    <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
       <artifactId>jboss-ejb-api_3.1_spec</artifactId>
       <version>1.0.2.Final-redhat-2</version>
@@ -187,7 +192,7 @@
       <artifactId>jboss-logging</artifactId>
       <version>3.1.2.GA-redhat-1</version>
     </dependency>
-   <!--   <dependency>
+      <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
       <version>2.3.6.Final-redhat-1</version>
@@ -197,7 +202,7 @@
       <artifactId>async-http-servlet-3.0</artifactId>
       <version>2.3.6.Final-redhat-1</version>
     </dependency>
-    <dependency>
+    <!--  <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <version>2.3.6.Final-redhat-1</version>
@@ -207,6 +212,24 @@
       <artifactId>resteasy-multipart-provider</artifactId>
       <version>2.3.6.Final-redhat-1</version>
     </dependency>-->
+    <dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-jaxrs</artifactId>
+    <version>2.2.1.GA</version>
+    <scope>provided</scope>
+</dependency>
+<dependency>
+	<groupId>org.jboss.as</groupId>
+	<artifactId>jboss-as-cli</artifactId>
+	<version>7.1.0.Final</version>
+</dependency>
+
+<dependency>
+    <groupId>org.jboss.resteasy</groupId>
+    <artifactId>resteasy-multipart-provider</artifactId>
+    <version>2.2.0.GA</version>
+    <scope>provided</scope>
+</dependency>
     <dependency>
       <groupId>org.jboss.ejb3</groupId>
       <artifactId>jboss-ejb3-ext-api</artifactId>
@@ -292,6 +315,17 @@
       <artifactId>dom4j</artifactId>
       <version>1.6.1.redhat-6</version>
     </dependency>
+<!--  <dependency>
+	<groupId>org.jboss.resteasy</groupId>
+	<artifactId>resteasy-multipart-provider</artifactId>
+	<version>3.0.0.Final</version>
+</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey.contribs</groupId>
+			<artifactId>jersey-multipart</artifactId>
+			<version>1.8</version>
+		</dependency>-->
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>

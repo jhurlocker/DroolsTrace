@@ -1,7 +1,9 @@
 package com.redhat.brms.rest;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -17,6 +19,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
 
 import com.redhat.brms.poi.GenerateDoc;
+import com.redhat.brms.req.CaseInsensitiveProps;
 import com.redhat.brms.req.ReqTemplate;
 import com.redhat.brms.req.ReqTestCvrg;
 import com.redhat.brms.req.ReqTestCvrgList;
@@ -277,6 +280,7 @@ public class RestReq {
 	@Path("requirementsByProject/{projectName}")
 	@Produces("application/json")
 	public RequirementList getReqsByProj(@PathParam("projectName") String projectName) {
+
 		ReqListFromHead reqCatsFromHead = new ReqListFromHead();
 			
 		RequirementList requirementList = null;
@@ -320,6 +324,7 @@ public class RestReq {
 	@Path("listOfGitRepos")
 	//@Produces("application/json")
 	public ArrayList<String> getListOfGitRepos() {
+		
 		BRMSGitPathFileFromHead brmsGitPathFileFromHead = new BRMSGitPathFileFromHead();
 		ListOfGitRepos listOfGitRepos = new ListOfGitRepos();
 		ArrayList<String> gitRepoList = new ArrayList<String>();

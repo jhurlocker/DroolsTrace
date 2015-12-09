@@ -9,6 +9,12 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
+import org.jboss.as.cli.CliInitializationException;
+import org.jboss.as.cli.CommandContext;
+import org.jboss.as.cli.CommandContextFactory;
+import org.jboss.as.cli.CommandLineException;
+
+import com.redhat.brms.rest.ReadAndWriteProps;
 
 /**
  * 
@@ -24,7 +30,15 @@ public class AddBRMSGitRepoPath {
 	public void addPath(String brmsRepoPath) {
 	
 		//Default Drools Trace Git repo path
+		//brmsRepoPath = "/var/lib/openshift/564ccd0b2d527177f3000234/brms/jboss/bin/.niogit";
+		if(brmsRepoPath.endsWith("/"))
+		{
+			brmsRepoPath = brmsRepoPath.substring(0,brmsRepoPath.length() - 1);
+		}
 		File traceGitPath = new File(brmsRepoPath + "/../rm");
+		ReadAndWriteProps readAndWriteProps = new ReadAndWriteProps();
+		
+		readAndWriteProps.write(brmsRepoPath);
 		
 		//Create a Git repo for Drools Trace if it doesn't exist
 		if (!traceGitPath.exists()){
@@ -36,9 +50,11 @@ public class AddBRMSGitRepoPath {
 			}
 
 		}
-		
+    
+	
     Repository repository = null;
 	try {
+		//this.setPropValByCLI(traceGitPath.getCanonicalPath());
 		repository = new FileRepository(traceGitPath.getCanonicalPath() + "/.git");
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
@@ -84,10 +100,37 @@ public class AddBRMSGitRepoPath {
 	    .call();
 	} catch (GitAPIException e) {
 		// TODO Auto-generated catch block
+		System.out.println("Not adding brmsMetaData.path");
 		e.printStackTrace();
 	}
 
  
     repository.close();
 	}
+	
+//	public String setPropValByCLI(String traceGitRepoPath){
+//        // Initialize the CLI context
+//        final CommandContext ctx;
+//        try {
+//            ctx = CommandContextFactory.getInstance().newCommandContext();
+//        } catch(CliInitializationException e) {
+//            throw new IllegalStateException("Failed to initialize CLI context", e);
+//        }
+//
+//        try {
+//            // connect to the server controller
+//            ctx.connectController("localhost", 9999);
+//
+//            // execute commands and operations
+//            ctx.handle("/system-property=brmsGitPath/:remove");
+//            ctx.handle("/system-property=brmsGitPath/:add(value=" + traceGitRepoPath + ")");
+//        } catch (CommandLineException e) {
+//            // the operation or the command has failed
+//        } finally {
+//            // terminate the session and
+//            // close the connection to the controller
+//            ctx.terminateSession();
+//        }
+//        return System.getProperty("brmsGitPath");
+//	}
 }

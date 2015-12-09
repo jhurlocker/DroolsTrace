@@ -21,7 +21,11 @@ import com.redhat.brms.req.Requirement;
 public class ParseDoc {
 	
 public Requirement generate(String filename) {
+	//!!! FOR OPENSHIFT !!!
 	File file = new File(filename);
+	System.out.println("FILENAME= " + filename);
+	//File file = new File("/var/lib/openshift/564ccd0b2d527177f3000234/brms/jboss/bin/rm/" + filename);
+	
 	InputStream fis = null;
 	try {
 		fis = new FileInputStream(file);

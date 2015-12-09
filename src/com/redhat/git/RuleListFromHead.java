@@ -67,7 +67,7 @@ public class RuleListFromHead {
         while (treeWalk.next()){
         	
         	String theFileName = treeWalk.getNameString();
-        	
+        	System.out.println("%%%%%%&&&&&&&&&& THE PATH OF FILE= " + treeWalk.getPathString());
         	//Only get rule files that can be rendered in the browser.  Need to add more support for other types
         	//of rules and files
         	if (!(theFileName.trim().startsWith(".")) &&

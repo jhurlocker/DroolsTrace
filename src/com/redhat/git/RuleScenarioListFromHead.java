@@ -68,9 +68,11 @@ public class RuleScenarioListFromHead {
         while (treeWalk.next()){
         	
         	String theFileName = treeWalk.getNameString();
-        	
+        	if (treeWalk.getPathString().contains("/src/test/java/") || 
+        			treeWalk.getPathString().contains("/src/test/resources/")){
         	if (!(theFileName.trim().startsWith(".")) &&        		
-        		theFileName.trim().endsWith(".scenario")){
+        		(theFileName.trim().endsWith(".scenario") ||
+        		theFileName.trim().endsWith(".java"))){
         		ruleTest = new RuleTest();
 
         		ruleContentMap.put("ruleName", treeWalk.getNameString());
@@ -99,7 +101,7 @@ public class RuleScenarioListFromHead {
         count++;
         }
         }
-        
+        }
         revWalk.dispose();
 
         repository.close();

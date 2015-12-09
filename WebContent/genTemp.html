@@ -157,6 +157,7 @@ console.log("Selected Proj= " + $scope.selectedProj);
    	console.log("setProj val= " + $scope.selectedProj);
 	if (completed == "true"){
 		console.log("COMPLETED!");
+		alert("Generating Template");
 		var arrayReqs = JSON.stringify($scope.likedLabels);
         	$http.put("/BRMS-ReqTool-Rest/rservices/message/genTemp/" + arrayReqs + "/" + gitRepo + "/" + $scope.name + "/" + $scope.description + "/" + gitRepo.replace(".git", "") + ".reqTemp").success(function(arrayReqs, status) {
 			

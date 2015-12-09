@@ -138,8 +138,19 @@ table tr:nth-child(even) {
         </tr>
         <tr ng-if="showUploadReq">
             <td colspan="9">
-            	<input ng-disabled="isGitRepoSelected()" ng-model="fileLocation" size="70"/>
-            	&nbsp;<button ng-disabled="isGitRepoSelected()" type="submit" ng-click="uploadReq(fileLocation)">Upload</button>
+            <form action="/BRMS-ReqTool-Rest/rservices/message/uploadFile" method="post" enctype="multipart/form-data"  >
+            <!-- <input type="file" ng-disabled="isGitRepoSelected()" file-model="reqFile"/>
+            &nbsp;<button ng-disabled="isGitRepoSelected()" ng-click="uploadFile()" >Upload</button>-->
+            <input ng-disabled="isGitRepoSelected()" ng-model="fileLocation" type="file" name="file" style="width: 400px"/>
+            	&nbsp;<button type="submit" ng-disabled="isGitRepoSelected()" ng-click="refreshPage()">Upload</button>
+            </form>
+            	<!--  <input ng-disabled="isGitRepoSelected()" ng-model="fileLocation" size="70"/>
+            	&nbsp;<button ng-disabled="isGitRepoSelected()" type="submit" ng-click="uploadReq(fileLocation)">Upload</button>-->
+         	</td>
+         </tr>
+         <tr ng-if="showUploadMessage">
+         	<td colspan="9">
+         	<i>Uploading Requirement</i>
          	</td>
          </tr>
 		</table>
@@ -180,27 +191,28 @@ table tr:nth-child(even) {
               <button ng-if="x.expanded" ng-click="x.expanded = false">-</button>
               <button ng-if="!x.expanded" ng-click="x.expanded = true">+</button>
             </td>
-            <td ng-show="! edit == $index || edit == -1">{{x.reqName}}</td>
+            <td ng-show="edit == -1">{{x.reqName}}</td>
             <td ng-show="edit == $index"><input type="text" ng-model="editReqName"/></td>
-            <td ng-show="! edit == $index || edit == -1">{{x.reqDescription}}</td>
+            <td ng-show="edit == -1">{{x.reqDescription}}</td>
             <td ng-show="edit == $index"><input ng-model="editDesc" type="text" ng-attr-value="{{x.reqDescription}}"/></td>
-            <td ng-show="! edit == $index || edit == -1">{{x.reqVersion}}</td>
+            <td ng-show="edit == -1">{{x.reqVersion}}</td>
             <td ng-show="edit == $index"><input ng-model="editVersion" type="text" ng-attr-value="{{x.reqVersion}}"/></td>
-            <td ng-show="! edit == $index || edit == -1">{{x.type}}</td>
+            <td ng-show="edit == -1">{{x.type}}</td>
             <td ng-show="edit == $index"><input ng-model="editType" type="text" ng-attr-value="{{x.type}}"/></td>
-            <td ng-show="! edit == $index || edit == -1">{{x.status}}</td>
+            <td ng-show="edit == -1">{{x.status}}</td>
             <td ng-show="edit == $index"><input ng-model="editStatus" type="text" ng-attr-value="{{x.status}}"/></td>
-            <td ng-show="! edit == $index || edit == -1">{{x.dueDate}}</td>
+            <td ng-show="edit == -1">{{x.dueDate}}</td>
             <td ng-show="edit == $index"><input type="text" ng-attr-value="{{x.dueDate}}"/></td>							
-            <td ng-show="! edit == $index || edit == -1">{{x.severity}}</td>
+            <td ng-show="edit == -1">{{x.severity}}</td>
             <td ng-show="edit == $index"><input ng-model="editSeverity" type="text" ng-attr-value="{{x.severity}}"/></td>
             
             <td><input type="image" ng-show="editButton" ng-model="editButton" name="Edit" src="img/edit.png" border="0" alt="Edit" ng-click="display('edit', $index, x)"/>&nbsp;
-            <input type="image" ng-show="saveButton" ng-model="saveButton" name="Save" src="img/add.png" border="0" alt="Save" ng-click="editReq(editReqName, editDesc, editVersion, editType, editStatus, editSeverity, x.sectionMap, x.associatedRuleList)"/>
+            <input type="image" ng-show="edit == $index" ng-model="saveButton" name="Save" src="img/add.png" border="0" alt="Save" ng-click="editReq(editReqName, editDesc, editVersion, editType, editStatus, editSeverity, x.sectionMap, x.associatedRuleList)"/>
             <input ng-show="edit == $index" type="image" ng-show="undoButton" ng-model="undoButton" name="Undo" src="img/undo.png" border="0" alt="Undo" ng-click="display('undo', $index)"/>
-            &nbsp;<input type="image" name="Remove" src="img/delete.png" border="0" alt="Remove" ng-click="removeReq(x.reqName)"/></td>
+            &nbsp;<input type="image" ng-show="editButton" name="Remove" src="img/delete.png" border="0" alt="Remove" ng-click="removeReq(x.reqName)"/></td>
           </tr>
-          <tr  ng-if="x.expanded" ng-show="! edit == $index || edit == -1">
+         <!--   <tr  ng-if="x.expanded" ng-show="! edit == $index || edit == -1">-->
+          <tr ng-if="x.expanded" ng-show="edit == -1">
           <td colspan="8">
           <table >
           <tr ng-if="x.expanded" ng-repeat="(heading, sectionText) in x.sectionMap">
@@ -217,7 +229,7 @@ table tr:nth-child(even) {
           <tr ng-if="x.expanded" ng-repeat="(heading, sectionText) in x.sectionMap">
           <td style="background-color: #ffffff"><b>Section</b></td>
           <td style="background-color: #ffffff">{{heading}}<input ng-attr-id="{{ 'headingEdit' + $index }}" ng-show="false" ng-attr-value="{{heading}}" size="5"/></td>
-          <td style="background-color: #ffffff"><input type="text" ng-attr-id="{{ 'sectionEdit' + $index }}" ng-attr-value="{{sectionText}}"/></td>
+          <td style="background-color: #ffffff"><input type="text" ng-attr-id="{{ 'sectionEdit' + $index }}" ng-attr-value="{{sectionText}}" size="75"/></td>
           </tr>
           </table>
           </td>
@@ -228,12 +240,12 @@ table tr:nth-child(even) {
             <td><div>{{x.ruleContent}}</div></td>
             <td colspan="6">{{x.reqDescription}}</td>
           </tr> -->
-          <tr ng-if="x.expanded" ng-repeat="d in x.associatedRuleList" ng-repeat-end="">
+          <tr ng-if="x.expanded" ng-show="edit == -1" ng-repeat="d in x.associatedRuleList" ng-repeat-end="">
           	<td style="background-color: #ffffff"></td>
           	<td style="background-color: #ffffff"><i>Associated Rule</i></td>
           	<td colspan="6" style="background-color: #ffffff">{{d.ruleName}}</td>
           </tr>
-         <tr ng-if="x.expanded" ng-repeat="r in rules" ng-repeat-end="">
+         <tr ng-if="x.expanded" ng-show="edit == -1" ng-repeat="r in rules" ng-repeat-end="">
 			<td></td>
           	<td><i>Rule Content</i></td>
           	<td colspan="5" style="background-color: #ffffff">{{getRule(d.ruleName)}}</td>
@@ -247,7 +259,7 @@ table tr:nth-child(even) {
 
 <script>
 var app = angular.module('myApp', []);
-app.controller('customersCtrl', function($scope, $http, $sce) {
+app.controller('customersCtrl', function($scope, $http, $sce, $timeout) {
   $http.get("/BRMS-ReqTool-Rest/rservices/message/requirements/" + $scope.selectedProj)
 	  .success(function (response) {$scope.reqs = response.requirementList;});
   	//console.dir($scope);
@@ -265,7 +277,39 @@ app.controller('customersCtrl', function($scope, $http, $sce) {
     	data = JSON.stringify(val);
     	console.log("this is the data",data);
     	};
-    	
+
+        $scope.showUploadMessage = false;
+        $scope.refreshPage = function(){
+        	console.log("IN REFRESHPAGE FUNCTION");
+    		
+            $scope.showUploadMessage = true;
+
+    		$timeout(function() {    		
+        		$scope.showUploadMessage = false;
+           
+        		$scope.showReqs(document.getElementById("gitRepo").value, "");
+        	}, 4000);
+
+        }
+
+    $scope.uploadFile = function(){
+        var file = $scope.reqFile;
+        console.log('file is ' );
+        console.dir(file);
+        var uploadUrl = "/BRMS-ReqTool-Rest/rservices/message/uploadFile";
+        var fd = new FormData();
+        fd.append('file', file);
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(){
+        	$scope.showReqs(document.getElementById("gitRepo").value, "");
+        })
+        .error(function(){
+        });
+    }    	
+
     $scope.sendPost = function(val) {
     	data = JSON.stringify(val);
     	console.log("this is the data",data);
@@ -433,17 +477,20 @@ console.log("customSectionValArray= " + customSectionValArray);
       if (edit == 'edit') {
         console.log("INDEX= " + index);
         console.log("REQ NAME= " + req.reqName);
+        
         $scope.editReqName = req.reqName;
         $scope.undoButton = true;
         $scope.saveButton = true;
         $scope.editButton = false;
         $scope.edit = index;
+        console.log("EDIT= " + $scope.edit);
       } else {
     	  console.log("INDEX= " + index);
           $scope.undoButton = false;
           $scope.saveButton = false;
           $scope.editButton = true;
           $scope.edit = -1;
+          console.log("EDIT= " + $scope.edit);
       }
       //return $scope.edit == true;
     }

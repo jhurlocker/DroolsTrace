@@ -71,8 +71,6 @@ angular.module('ui.bootstrap.demo').controller('CarouselDemoCtrl', function ($sc
     var newWidth = 100 + slides.length + 1;
     console.log("NewWidth= " + newWidth);
     slides.push({
-      //image: '//placekitten.com/' + newWidth + '/300',
- //     image: window.location.host + '//wtop.com/wp-content/uploads/2015/' + 10 + '/AP_6010130158-560x374.jpg',
 image: '//' + window.location.host + '/BRMS-ReqTool-Rest/img/index/' + newWidth + '/traceIntro.png',
 text: ['More','Extra','Lots of','Surplus', 'testing'][slides.length % 3] + ' ' +
         ['Cats', 'Kittys', 'Felines', 'Cutes', 'test'][slides.length % 3]
